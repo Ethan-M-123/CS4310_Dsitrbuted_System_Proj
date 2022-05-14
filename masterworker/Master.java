@@ -32,12 +32,14 @@ public class Master extends Process {
     int workersCount = Integer.parseInt(args[3]);
 
     Msg.info("Hello! My PID is "+getPID()+". Got "+  workersCount + " workers and "+tasksCount+" tasks to process");
-
+    
+    long start = System.nanoTime();
     for (int i = 0; i < tasksCount; i++) {
       Task task = new Task("Task_" + i, taskComputeSize[i], taskCommunicateSize);
       Msg.debug("Sending \"" + task.getName()+ "\" to \"worker_" + i % workersCount + "\"");
       task.send("worker_"+(i%workersCount));
     }
+    long end = System.nanoTime();
 
     Msg.info("All tasks have been dispatched. Let's tell everybody the computation is over.");
 
@@ -47,5 +49,6 @@ public class Master extends Process {
     }
 
     Msg.info("Goodbye now!");
+    System.out.println("Total Time: " + (end-start));
   }
 }

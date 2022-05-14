@@ -26,12 +26,14 @@ public class Master extends Process {
       System.exit(1);
     }
 
-
     int tasksCount = Integer.parseInt(args[0]);
     double[] taskComputeSize = Arrays.stream(args[1].split(",")).mapToDouble(Double::parseDouble).toArray(); //string to double array
     double taskCommunicateSize = Double.parseDouble(args[2]);
 
     int workersCount = Integer.parseInt(args[3]);
+
+    long[] starttimes = new long[workersCount];
+    long[] endtimes = new long[workersCount];
 
     Msg.info("Hello! My PID is "+getPID()+". Got "+  workersCount + " workers and "+tasksCount+" tasks to process");
     
@@ -42,11 +44,12 @@ public class Master extends Process {
     }
 
     Arrays.sort(temp, (a, b) -> (int)a.getFlopsAmount() - (int)b.getFlopsAmount()); //weird sort thing...
-    
+    long start = System.nanoTime();
     for (int i = 0; i < tasksCount; i++) {
       Msg.debug("Sending \"" + temp[i]+ "\" to \"worker_" + i % workersCount + "\"");
       temp[i].send("worker_"+(i%workersCount));
     }
+    long end = System.nanoTime();
 
     Msg.info("All tasks have been dispatched. Let's tell everybody the computation is over.");
 
@@ -56,5 +59,17 @@ public class Master extends Process {
     }
 
     Msg.info("Goodbye now!");
+    System.out.println("Total Time: " + (end-start));
   }
+
+  public static double avgArr(long[] A){
+    double avg = 0;
+    for(int i = 0; i < A.length; ++i){
+      avg += A[i];
+    }
+    avg = avg/A.length;
+    return avg;
+  }
+
 }
+
