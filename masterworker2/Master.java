@@ -32,9 +32,6 @@ public class Master extends Process {
 
     int workersCount = Integer.parseInt(args[3]);
 
-    long[] starttimes = new long[workersCount];
-    long[] endtimes = new long[workersCount];
-
     Msg.info("Hello! My PID is "+getPID()+". Got "+  workersCount + " workers and "+tasksCount+" tasks to process");
     
     Task[] temp = new Task[tasksCount]; // task creator
